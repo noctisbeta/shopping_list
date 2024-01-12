@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shopping_list/components/my_elevated_button.dart';
+import 'package:shopping_list/components/my_loading_indicator.dart';
 import 'package:shopping_list/components/my_text_field.dart';
 import 'package:shopping_list/constants/colors.dart';
 import 'package:shopping_list/room_service.dart';
@@ -106,6 +107,7 @@ class _EntryViewState extends State<EntryView> {
               IgnorePointer(
                 ignoring: requestInProgress,
                 child: MyTextField(
+                  label: 'Room code',
                   maxLength: 25,
                   onChanged: (value) {
                     setState(() {
@@ -116,17 +118,7 @@ class _EntryViewState extends State<EntryView> {
               ),
               const SizedBox(height: 16),
               switch (requestInProgress) {
-                true => const Stack(
-                    children: [
-                      CircularProgressIndicator(
-                        color: kQuaternaryColor,
-                        strokeWidth: 8,
-                      ),
-                      CircularProgressIndicator(
-                        color: kPrimaryColor,
-                      ),
-                    ],
-                  ),
+                true => const MyLoadingIndicator(),
                 false => Row(
                     children: [
                       Expanded(

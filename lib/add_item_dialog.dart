@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list/components/my_elevated_button.dart';
+import 'package:shopping_list/components/my_loading_indicator.dart';
+import 'package:shopping_list/components/my_text_field.dart';
+import 'package:shopping_list/constants/colors.dart';
 import 'package:shopping_list/shopping_list_item.dart';
 import 'package:shopping_list/shopping_list_service.dart';
 
@@ -64,68 +68,69 @@ class _AddItemDialogState extends State<AddItemDialog> {
       child: Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.8,
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Item Name',
-                    ),
-                    onChanged: (value) {
-                      itemName = value;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Quantity',
-                    ),
-                    onChanged: (value) {
-                      quantity = int.parse(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Price',
-                    ),
-                    onChanged: (value) {
-                      price = double.parse(value);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  switch (loading) {
-                    true => const CircularProgressIndicator(),
-                    false => ElevatedButton(
-                        onPressed: handleAddItem,
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 24,
-                          ),
-                        ),
-                        child: const Text('Add Item'),
-                      ),
-                  },
-                ],
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
+              border: Border.all(
+                color: kSecondaryColor,
+                width: 2,
               ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MyTextField(
+                  label: 'Item Name',
+                  inverted: true,
+                  onChanged: (value) {
+                    itemName = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: MyTextField(
+                        label: 'Quantity',
+                        inverted: true,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          quantity = int.parse(value);
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Expanded(
+                      child: MyTextField(
+                        label: 'Price',
+                        inverted: true,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          price = double.parse(value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                switch (loading) {
+                  true => const MyLoadingIndicator(),
+                  false => MyElevatedButton(
+                      label: 'Add Item',
+                      backgroundColor: kQuaternaryColor,
+                      onPressed: handleAddItem,
+                    ),
+                },
+              ],
             ),
           ),
         ),
