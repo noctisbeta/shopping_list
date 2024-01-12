@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shopping_list/components/my_elevated_button.dart';
+import 'package:shopping_list/components/my_text_field.dart';
 import 'package:shopping_list/constants/colors.dart';
 import 'package:shopping_list/room_service.dart';
 
@@ -13,38 +15,54 @@ class EntryView extends StatefulWidget {
 }
 
 class _EntryViewState extends State<EntryView> {
-  String enterCode = '';
-  String createCode = '';
+  String code = '';
+  bool requestInProgress = false;
 
   Future<void> handleEnterRoom() async {
-    log('Entering room with access code: $enterCode');
+    log('Entering room with access code: $code');
 
     optimisticPush() {
-      context.go('/room/$enterCode');
+      context.go('/room/$code');
     }
 
-    final String? code = await RoomService.getRoomByCode(enterCode);
+    setState(() {
+      requestInProgress = true;
+    });
 
-    if (code != null) {
+    final String? resCode = await RoomService.getRoomByCode(code);
+
+    setState(() {
+      requestInProgress = false;
+    });
+
+    if (resCode != null) {
       optimisticPush();
     } else {
-      log('Room with access code $enterCode does not exist');
+      log('Room with access code $code does not exist');
     }
   }
 
   Future<void> handleCreateRoom() async {
-    log('Creating room with access code: $createCode');
+    log('Creating room with access code: $code');
 
     optimisticPush() {
-      context.go('/room/$createCode');
+      context.go('/room/$code');
     }
 
-    final String? code = await RoomService.createRoom(createCode);
+    setState(() {
+      requestInProgress = true;
+    });
 
-    if (code != null) {
+    final String? resCode = await RoomService.createRoom(code);
+
+    setState(() {
+      requestInProgress = false;
+    });
+
+    if (resCode != null) {
       optimisticPush();
     } else {
-      log('Room with access code $enterCode already exists');
+      log('Room with access code $code already exists');
     }
   }
 
@@ -52,14 +70,14 @@ class _EntryViewState extends State<EntryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPrimaryColor,
-      body: Center(
+      body: Align(
+        alignment: Alignment.center.add(const Alignment(0, -0.2)),
         child: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             boxShadow: const [
               BoxShadow(
-                // color: Colors.black12,
                 color: kSecondaryColor,
                 blurRadius: 10,
                 spreadRadius: 3,
@@ -75,7 +93,6 @@ class _EntryViewState extends State<EntryView> {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Enter a room code',
@@ -86,78 +103,50 @@ class _EntryViewState extends State<EntryView> {
                 ),
               ),
               const SizedBox(height: 16),
-              const TextField(
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  focusColor: kPrimaryColor,
-                  hoverColor: kPrimaryColor,
-                  labelText: 'Room code',
-                  labelStyle: TextStyle(
-                    color: kSecondaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  floatingLabelStyle: TextStyle(
-                    color: kQuaternaryColor,
-                    decorationColor: kSecondaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: kSecondaryColor,
-                      width: 1.5,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: kQuaternaryColor,
-                      width: 1.5,
-                    ),
-                  ),
+              IgnorePointer(
+                ignoring: requestInProgress,
+                child: MyTextField(
+                  maxLength: 25,
+                  onChanged: (value) {
+                    setState(() {
+                      code = value;
+                    });
+                  },
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kTernaryColor,
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+              switch (requestInProgress) {
+                true => const Stack(
+                    children: [
+                      CircularProgressIndicator(
+                        color: kQuaternaryColor,
+                        strokeWidth: 8,
+                      ),
+                      CircularProgressIndicator(
+                        color: kPrimaryColor,
+                      ),
+                    ],
+                  ),
+                false => Row(
+                    children: [
+                      Expanded(
+                        child: MyElevatedButton(
+                          label: 'Enter',
+                          backgroundColor: kSecondaryColor,
+                          onPressed: handleEnterRoom,
                         ),
                       ),
-                      child: const Text('Enter'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kSecondaryColor,
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: MyElevatedButton(
+                          label: 'Create',
+                          backgroundColor: kQuaternaryColor,
+                          onPressed: handleCreateRoom,
                         ),
                       ),
-                      child: const Text('Create'),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+              },
             ],
           ),
         ),
