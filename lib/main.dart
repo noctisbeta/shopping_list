@@ -6,6 +6,7 @@ void main() {
   usePathUrlStrategy();
   runApp(
     MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
     ),
   );

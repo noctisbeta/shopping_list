@@ -18,8 +18,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
   String itemName = '';
   int quantity = 0;
   double price = 0.0;
+  bool loading = false;
 
   Future<void> handleAddItem() async {
+    setState(() {
+      loading = true;
+    });
+
     popDialog() {
       Navigator.of(context).pop();
     }
@@ -40,6 +45,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ),
       widget.code,
     );
+
+    setState(() {
+      loading = false;
+    });
 
     if (res != null) {
       popDialog();
@@ -99,19 +108,22 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   const SizedBox(
                     height: 12,
                   ),
-                  ElevatedButton(
-                    onPressed: handleAddItem,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  switch (loading) {
+                    true => const CircularProgressIndicator(),
+                    false => ElevatedButton(
+                        onPressed: handleAddItem,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 24,
+                          ),
+                        ),
+                        child: const Text('Add Item'),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                    ),
-                    child: const Text('Add Item'),
-                  ),
+                  },
                 ],
               ),
             ),

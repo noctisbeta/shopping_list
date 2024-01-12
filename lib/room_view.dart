@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shopping_list/add_item_dialog.dart';
 import 'package:shopping_list/shopping_list_item.dart';
 import 'package:shopping_list/shopping_list_service.dart';
@@ -47,6 +48,16 @@ class _RoomViewState extends State<RoomView> {
       appBar: AppBar(
         title: Text('Room ${widget.code}'),
         backgroundColor: Colors.green,
+        leading: IconButton(
+          onPressed: () => context.go('/'),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => setFuture(),
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: handleAddItem,

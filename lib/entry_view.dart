@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shopping_list/constants/colors.dart';
 import 'package:shopping_list/room_service.dart';
 
 class EntryView extends StatefulWidget {
@@ -50,74 +51,112 @@ class _EntryViewState extends State<EntryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       body: Center(
-        child: ConstrainedBox(
-          constraints: MediaQuery.of(context).size.width > 600
-              ? const BoxConstraints(maxWidth: 300)
-              : BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.8,
-                ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            boxShadow: const [
+              BoxShadow(
+                // color: Colors.black12,
+                color: kSecondaryColor,
+                blurRadius: 10,
+                spreadRadius: 3,
+                offset: Offset(0, 4),
+              ),
+            ],
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            border: Border.all(
+              color: kQuaternaryColor,
+              width: 2,
+            ),
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Enter access code"),
-              TextField(
-                decoration: const InputDecoration(
+              const Text(
+                'Enter a room code',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: kSecondaryColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const TextField(
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Access code',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    enterCode = value;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              ElevatedButton(
-                onPressed: handleEnterRoom,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  focusColor: kPrimaryColor,
+                  hoverColor: kPrimaryColor,
+                  labelText: 'Room code',
+                  labelStyle: TextStyle(
+                    color: kSecondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 24,
+                  floatingLabelStyle: TextStyle(
+                    color: kQuaternaryColor,
+                    decorationColor: kSecondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                ),
-                child: const Text('Enter'),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text("Create group with access code"),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Access code',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    createCode = value;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              ElevatedButton(
-                onPressed: handleCreateRoom,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: kSecondaryColor,
+                      width: 1.5,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 24,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: kQuaternaryColor,
+                      width: 1.5,
+                    ),
                   ),
                 ),
-                child: const Text('Create'),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kTernaryColor,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Enter'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kSecondaryColor,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Create'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
